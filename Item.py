@@ -8,12 +8,14 @@ class Item:
     theHeldItem = None
 
     # Hover item name
+    pygame.font.init()
     font = pygame.font.Font(None, 26)
     whiteColor = (255, 255, 255) 
     hoverItemText = None
 
     # Colors
     lightGrayColor = (120,120,120,128)
+    hoverColor = (200,200,200,128)
 
     def __init__(self,itemSizeX,itemSizeY,imagePath,itemName):
         self.itemSizeX = itemSizeX
@@ -76,11 +78,12 @@ class Item:
             return
         if Item.theHeldItem is None:
             return
-        print ("Exista macar un container si exista un HeldItem")
+        print ("<< Incercare de plasare cu clickul>>")
+        print ("- Exista macar un container si exista un HeldItem")
         for container in ItemContainer.ItemContainer.allContainersVector:
             for tile in container.tilesVector:
                 if tile.collidepoint(Item.theHeldItem.rect.x+25,Item.theHeldItem.rect.y+25):
-                    print("HeldItem s-a atins de un tile de al unui container")
+                    print("- HeldItem s-a atins de un tile de al unui container")
                     # If touches any item it can't be placed
                     Item.theHeldItem.rect.x = tile.x
                     Item.theHeldItem.rect.y = tile.y
@@ -88,13 +91,13 @@ class Item:
                     for container in ItemContainer.ItemContainer.allContainersVector:
                         for redTile in container.redTilesVector:
                             if redTile.colliderect(Item.theHeldItem.rect):
-                                print("HeldItem s-a atins de un red tile")
+                                print("- HeldItem s-a atins de un red tile")
                                 Item.theHeldItem.rect.x = Item.theHeldItem.lastValidPositon[0]
                                 Item.theHeldItem.rect.y = Item.theHeldItem.lastValidPositon[1]
                                 return
                     for item in Item.allItemsVector:
                         if item.rect.colliderect(Item.theHeldItem.rect) and item is not Item.theHeldItem:
-                            print("HeldItem s-a atins de un alt item deci nu poate fi plasat")
+                            print("- HeldItem s-a atins de un alt item deci nu poate fi plasat")
                             Item.theHeldItem.rect.x = Item.theHeldItem.lastValidPositon[0]
                             Item.theHeldItem.rect.y = Item.theHeldItem.lastValidPositon[1]
                             return
@@ -113,3 +116,11 @@ class Item:
                 return
         Item.hoverItemText = None
 
+    def CheckGlowOnHold(mouseX,mouseY):
+        if Item.theHeldItem is not None:
+            return
+        for item in Item.allItemsVector:
+            if item.rect.collidepoint(mouseX,mouseY):
+                item.transparentImage.fill(Item.whiteColor)
+            else:
+                item.transparentImage.fill(Item.lightGrayColor)

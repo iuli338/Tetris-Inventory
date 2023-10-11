@@ -21,6 +21,11 @@ item1 = IT.Item(3,3,"backpack.png","Backpack")
 item2 = IT.Item(2,2,"armor.png","Armor")
 item3 = IT.Item(3,1,"shotgun.png","Shotgun")
 item4 = IT.Item(1,1,"pistol.png","Pistol 9mm")
+# Add the items in the container
+container1.TryAddItemInCont(item1)
+container1.TryAddItemInCont(item2)
+container1.TryAddItemInCont(item3)
+container1.TryAddItemInCont(item4)
 
 # Main game loop
 running = True
@@ -39,9 +44,10 @@ while running:
     # Check item follow mouse
     mouseX, mouseY = pygame.mouse.get_pos()
     IT.Item.ItemFollowMouse(mouseX,mouseY)
-
     # Check hover item name text
     IT.Item.CheckHoverItemName(mouseX,mouseY)
+    # Check item hover glow
+    IT.Item.CheckGlowOnHold(mouseX,mouseY)
 
     # Clear the screen
     screen.fill((0, 0, 0))

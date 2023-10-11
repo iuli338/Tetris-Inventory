@@ -1,4 +1,5 @@
 import pygame
+import Item
 
 class ItemContainer:
 
@@ -7,9 +8,9 @@ class ItemContainer:
     redColor = (250,128,114)
     tileSize = (50,50)
     gapBetweenTiles = 2
-    pygame.font.init()
     tile:pygame.rect.Rect = pygame.Rect(0, 0, tileSize[0], tileSize[1])
         # Text
+    pygame.font.init()
     font = pygame.font.Font(None, 30)
     whiteColor = (255, 255, 255)
         #
@@ -24,6 +25,7 @@ class ItemContainer:
         self.posY = posY
         self.tilesVector = []
         self.redTilesVector:list = []
+        self.name = name
         # Iterate and set each tile their correct position to form an 2D array
         for i in range(sizeY):
             for j in range(sizeX):
@@ -80,4 +82,37 @@ class ItemContainer:
     def GetPos(self):
         return list((int(self.posX),int(self.posY)))
 
-    #def TryAddItemInInv (itemToAdd:Item)
+    def TryAddItemInCont (self,itemToAdd:Item.Item):
+        print ("<< Incercare de plasare prin comanda >>")
+        if len(ItemContainer.allContainersVector) == 0:
+            return
+        for tile in self.tilesVector:
+            itemToAdd.rect.x = tile.x
+            itemToAdd.rect.y = tile.y
+            # It touches red tile it can't be placed
+            touchesRedTile = False
+            touchesOtherItems = False
+            for redTile in self.redTilesVector:
+                if redTile.colliderect(itemToAdd.rect):
+                    #print("- HeldItem s-a atins de un red tile")
+                    itemToAdd.rect.x = 0
+                    itemToAdd.rect.y = 0
+                    touchesRedTile = True
+                    break
+            # If touches any item it can't be placed
+            for item in Item.Item.allItemsVector:
+                if item.rect.colliderect(itemToAdd.rect) and item is not itemToAdd:
+                    #print("- HeldItem s-a atins de un alt item deci nu poate fi plasat")
+                    itemToAdd.rect.x = 0
+                    itemToAdd.rect.y = 0
+                    touchesOtherItems = True
+                    break
+            # If it doesn't touch any item or red tile it will be placed in the container
+            if (touchesRedTile == False and touchesOtherItems == False):
+                itemToAdd.rect.x = tile.x
+                itemToAdd.rect.y = tile.y
+                itemToAdd.lastValidPositon[0] = tile.x
+                itemToAdd.lastValidPositon[1] = tile.y
+                print ("Itemul [" + itemToAdd.itemName + "] a fost adaugat in containerul [" + self.name + "].")
+                return
+        print ("Itemul nu a putut fi introdus in container.")
