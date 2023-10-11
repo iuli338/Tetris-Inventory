@@ -17,10 +17,10 @@ container1 = ITC.ItemContainer("Container 1",6,6,20,20)
 container2 = ITC.ItemContainer("Container 2",3,3,550,200)
 container1.SetPosition(150,200)
 # Create item
-item1 = IT.Item(3,3,"backpack.png")
-item2 = IT.Item(2,2,"armor.png")
-item3 = IT.Item(3,1,"shotgun.png")
-item4 = IT.Item(1,1,"pistol.png")
+item1 = IT.Item(3,3,"backpack.png","Backpack")
+item2 = IT.Item(2,2,"armor.png","Armor")
+item3 = IT.Item(3,1,"shotgun.png","Shotgun")
+item4 = IT.Item(1,1,"pistol.png","Pistol 9mm")
 
 # Main game loop
 running = True
@@ -39,6 +39,9 @@ while running:
     # Check item follow mouse
     mouseX, mouseY = pygame.mouse.get_pos()
     IT.Item.ItemFollowMouse(mouseX,mouseY)
+
+    # Check hover item name text
+    IT.Item.CheckHoverItemName(mouseX,mouseY)
 
     # Clear the screen
     screen.fill((0, 0, 0))

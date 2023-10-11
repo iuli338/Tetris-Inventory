@@ -7,10 +7,15 @@ class Item:
     allItemsVector:list = []
     theHeldItem = None
 
+    # Hover item name
+    font = pygame.font.Font(None, 26)
+    whiteColor = (255, 255, 255) 
+    hoverItemText = None
+
     # Colors
     lightGrayColor = (120,120,120,128)
 
-    def __init__(self,itemSizeX,itemSizeY,imagePath):
+    def __init__(self,itemSizeX,itemSizeY,imagePath,itemName):
         self.itemSizeX = itemSizeX
         self.itemSizeY = itemSizeY
         self.sizeX = (itemSizeX * ItemContainer.ItemContainer.tileSize[0]) + (ItemContainer.ItemContainer.gapBetweenTiles * itemSizeX-1)
@@ -20,6 +25,7 @@ class Item:
         self.transparentImage.set_alpha(128)
         self.transparentImage.fill(Item.lightGrayColor)
         self.lastValidPositon = [0,0]
+        self.itemName = itemName
         # Load the item image
         try:
             # Load the image
@@ -38,6 +44,9 @@ class Item:
             screen.blit(item.transparentImage,(item.rect.x,item.rect.y))
             if item.image is not None:
                 screen.blit(item.image,(item.rect.x,item.rect.y))
+        if Item.hoverItemText is not None and Item.theHeldItem is None:
+            x, y = pygame.mouse.get_pos()
+            screen.blit(Item.hoverItemText,(x+10,y+20))
 
     def CheckMouseClick(mouseX,mouseY):
         for item in Item.allItemsVector:
@@ -95,4 +104,12 @@ class Item:
                     Item.theHeldItem.lastValidPositon[0] = tile.x
                     Item.theHeldItem.lastValidPositon[1] = tile.y
                     return
+
+    def CheckHoverItemName(mouseX,mouseY):
+        for item in Item.allItemsVector:
+            if item.rect.collidepoint(mouseX,mouseY):
+                # Text
+                Item.hoverItemText = Item.font.render(item.itemName, True, Item.whiteColor)
+                return
+        Item.hoverItemText = None
 
