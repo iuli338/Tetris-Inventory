@@ -17,10 +17,10 @@ container1 = ITC.ItemContainer("Container 1",6,6,20,20)
 container2 = ITC.ItemContainer("Container 2",3,3,550,200)
 container1.SetPosition(150,200)
 # Create item
-item1 = IT.Item(3,3)
-item2 = IT.Item(2,2)
-item3 = IT.Item(3,1)
-item4 = IT.Item(1,1)
+item1 = IT.Item(3,3,"backpack.png")
+item2 = IT.Item(2,2,"armor.png")
+item3 = IT.Item(3,1,"shotgun.png")
+item4 = IT.Item(1,1,"pistol.png")
 
 # Main game loop
 running = True

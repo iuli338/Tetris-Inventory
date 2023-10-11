@@ -4,7 +4,7 @@ import pygame
 class ItemContainer:
 
     # Static Members
-    grayColor = (30,30,30)
+    grayColor = (40,40,40)
     redColor = (250,128,114)
     tileSize = (50,50)
     gapBetweenTiles = 2

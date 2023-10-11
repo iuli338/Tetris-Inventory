@@ -8,22 +8,32 @@ class Item:
     theHeldItem = None
 
     # Colors
-    greenColor = (127, 255, 212)
+    lightGrayColor = (120,120,120,50)
 
-    def __init__(self,itemSizeX,itemSizeY):
+    def __init__(self,itemSizeX,itemSizeY,imagePath):
         self.itemSizeX = itemSizeX
         self.itemSizeY = itemSizeY
         self.sizeX = (itemSizeX * ItemContainer.ItemContainer.tileSize[0]) + (ItemContainer.ItemContainer.gapBetweenTiles * itemSizeX-1)
         self.sizeY = (itemSizeY * ItemContainer.ItemContainer.tileSize[1]) + (ItemContainer.ItemContainer.gapBetweenTiles * itemSizeY-1)
         self.rect:pygame.rect.Rect = pygame.Rect(0, 0, self.sizeX, self.sizeY)
         self.lastValidPositon = [0,0]
+        # Load the item image
+        try:
+            # Load the image
+            self.image = pygame.image.load(imagePath)
+        except pygame.error as e:
+            print("Failed to load the image:", e)
+            self.image = None
+        # Addes this instance to the vector
         Item.allItemsVector.append(self)
 
     def Draw(screen:pygame.surface.Surface):
         if len(Item.allItemsVector) == 0:
             return
         for item in Item.allItemsVector:
-            pygame.draw.rect(screen,Item.greenColor,item.rect)
+            pygame.draw.rect(screen,Item.lightGrayColor,item.rect)
+            if item.image is not None:
+                screen.blit(item.image,(item.rect.x,item.rect.y))
 
     def CheckMouseClick(mouseX,mouseY):
         for item in Item.allItemsVector:
@@ -35,6 +45,10 @@ class Item:
                     return
                 else:
                     if Item.theHeldItem is None:
+                        # Remove the element from its current position
+                        Item.allItemsVector.remove(item)
+                        # Insert it at the beginning of the list
+                        Item.allItemsVector.append(item)
                         Item.theHeldItem = item
                         return
 
