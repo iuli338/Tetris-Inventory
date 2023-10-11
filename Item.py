@@ -6,6 +6,7 @@ class Item:
     # Static members
     allItemsVector:list = []
     theHeldItem = None
+    rotatedStareWhenPiked = None
 
     # Hover item name
     pygame.font.init()
@@ -20,6 +21,7 @@ class Item:
     def __init__(self,itemSizeX,itemSizeY,imagePath,itemName):
         self.itemSizeX = itemSizeX
         self.itemSizeY = itemSizeY
+        self.rotated = False
         self.sizeX = (itemSizeX * ItemContainer.ItemContainer.tileSize[0]) + (ItemContainer.ItemContainer.gapBetweenTiles * itemSizeX-1)
         self.sizeY = (itemSizeY * ItemContainer.ItemContainer.tileSize[1]) + (ItemContainer.ItemContainer.gapBetweenTiles * itemSizeY-1)
         self.rect:pygame.rect.Rect = pygame.Rect(0, 0, self.sizeX, self.sizeY)
@@ -45,15 +47,39 @@ class Item:
             #pygame.draw.rect(screen,Item.lightGrayColor,item.rect)
             screen.blit(item.transparentImage,(item.rect.x,item.rect.y))
             if item.image is not None:
-                screen.blit(item.image,(item.rect.x,item.rect.y))
+                if item.rotated == False:    
+                    screen.blit(item.image,(item.rect.x,item.rect.y))
+                else:
+                    rotatedImage = pygame.transform.rotate(item.image, -90)
+                    screen.blit(rotatedImage,(item.rect.x,item.rect.y))
+
         if Item.hoverItemText is not None and Item.theHeldItem is None:
             x, y = pygame.mouse.get_pos()
             screen.blit(Item.hoverItemText,(x+10,y+20))
+
+    def RotateHeldItem():
+        # Swap the X and Y
+        temp = Item.theHeldItem.itemSizeX
+        Item.theHeldItem.itemSizeX = Item.theHeldItem.itemSizeY
+        Item.theHeldItem.itemSizeY = temp
+        del temp
+        sizeX = (Item.theHeldItem.itemSizeX * ItemContainer.ItemContainer.tileSize[0]) + (ItemContainer.ItemContainer.gapBetweenTiles * Item.theHeldItem.itemSizeX-1)
+        sizeY = (Item.theHeldItem.itemSizeY * ItemContainer.ItemContainer.tileSize[1]) + (ItemContainer.ItemContainer.gapBetweenTiles * Item.theHeldItem.itemSizeY-1)
+        Item.theHeldItem.sizeX = sizeX
+        Item.theHeldItem.sizeY = sizeY
+        Item.theHeldItem.rect = pygame.Rect(0, 0, sizeX, sizeY)
+        Item.theHeldItem.transparentImage = pygame.Surface((Item.theHeldItem.sizeX,Item.theHeldItem.sizeY))
+        Item.theHeldItem.transparentImage.set_alpha(128)
+        Item.theHeldItem.transparentImage.fill(Item.lightGrayColor)
+        Item.theHeldItem.rotated = ~Item.theHeldItem.rotated
 
     def CheckMouseClick(mouseX,mouseY):
         for item in Item.allItemsVector:
             if item.rect.collidepoint(mouseX, mouseY):
                 if Item.theHeldItem is item:
+                    # Check if the items was rotated but not placed
+                    if Item.theHeldItem.rotated != Item.rotatedStareWhenPiked:
+                        Item.RotateHeldItem()
                     Item.theHeldItem.rect.x = Item.theHeldItem.lastValidPositon[0]
                     Item.theHeldItem.rect.y = Item.theHeldItem.lastValidPositon[1]
                     Item.theHeldItem = None
@@ -65,6 +91,7 @@ class Item:
                         # Insert it at the beginning of the list for it to be on top of all items
                         Item.allItemsVector.append(item)
                         Item.theHeldItem = item
+                        Item.rotatedStareWhenPiked = item.rotated
                         return
 
     def ItemFollowMouse(mouseX,mouseY):
@@ -103,6 +130,7 @@ class Item:
                                 return
                         # If it doesn't touch any items it will be placed in the container
                         print ("- Item plasat cu succes")
+                        Item.rotatedStareWhenPiked = Item.theHeldItem.rotated
                         Item.theHeldItem.rect.x = tile.x
                         Item.theHeldItem.rect.y = tile.y
                         Item.theHeldItem.lastValidPositon[0] = tile.x
@@ -120,9 +148,35 @@ class Item:
 
     def CheckGlowOnHold(mouseX,mouseY):
         if Item.theHeldItem is not None:
+            if Item.theHeldItem.rect.collidepoint(mouseX,mouseY):
+                Item.theHeldItem.transparentImage.fill(Item.whiteColor)
+            else:
+                Item.theHeldItem.transparentImage.fill(Item.lightGrayColor)
             return
         for item in Item.allItemsVector:
             if item.rect.collidepoint(mouseX,mouseY):
                 item.transparentImage.fill(Item.whiteColor)
             else:
                 item.transparentImage.fill(Item.lightGrayColor)
+
+    def CheckRPress():
+        if (Item.theHeldItem is not None) and (Item.theHeldItem.itemSizeX != Item.theHeldItem.itemSizeY):
+            Item.RotateHeldItem()
+
+    def CheckESCPress():
+        if Item.theHeldItem is not None:
+            # Check if the items was rotated but not placed
+            if Item.theHeldItem.rotated != Item.rotatedStareWhenPiked:
+                Item.RotateHeldItem()
+            Item.theHeldItem.rect.x = Item.theHeldItem.lastValidPositon[0]
+            Item.theHeldItem.rect.y = Item.theHeldItem.lastValidPositon[1]
+            Item.theHeldItem = None
+
+    def CheckAllKeyPress(key):
+        if key == pygame.K_r:
+            Item.CheckRPress()
+        if key == pygame.K_ESCAPE:
+            Item.CheckESCPress()
+
+
+

@@ -21,9 +21,11 @@ item1 = IT.Item(3,3,"backpack.png","Backpack")
 item2 = IT.Item(2,2,"armor.png","Armor")
 item3 = IT.Item(3,1,"shotgun.png","Shotgun")
 item4 = IT.Item(1,1,"pistol.png","Pistol 9mm")
+item5 = IT.Item(1,1,"pistol.png","Pistol 9mm")
 # Add the items in the container
 container1.TryAddItemInCont(item1)
 container1.TryAddItemInCont(item4)
+container1.TryAddItemInCont(item5)
 container2.TryAddItemInCont(item2)
 container2.TryAddItemInCont(item3)
 
@@ -40,6 +42,8 @@ while running:
                 # Get the mouse position
                 mouseX, mouseY = pygame.mouse.get_pos()
                 IT.Item.CheckMouseClick(mouseX,mouseY)
+        if event.type == pygame.KEYDOWN:
+            IT.Item.CheckAllKeyPress(event.key)
 
     # Check item follow mouse
     mouseX, mouseY = pygame.mouse.get_pos()
