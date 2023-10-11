@@ -14,8 +14,8 @@ pygame.display.set_caption("Tetris Inventory")
 
 # Create one container
 container1 = ITC.ItemContainer("Container 1",6,6,20,20)
-container2 = ITC.ItemContainer("Container 2",3,3,550,200)
-container1.SetPosition(150,200)
+container2 = ITC.ItemContainer("Container 2",3,3,480,150)
+container1.SetPosition(150,150)
 # Create item
 item1 = IT.Item(3,3,"backpack.png","Backpack")
 item2 = IT.Item(2,2,"armor.png","Armor")
@@ -23,9 +23,9 @@ item3 = IT.Item(3,1,"shotgun.png","Shotgun")
 item4 = IT.Item(1,1,"pistol.png","Pistol 9mm")
 # Add the items in the container
 container1.TryAddItemInCont(item1)
-container1.TryAddItemInCont(item2)
-container1.TryAddItemInCont(item3)
 container1.TryAddItemInCont(item4)
+container2.TryAddItemInCont(item2)
+container2.TryAddItemInCont(item3)
 
 # Main game loop
 running = True

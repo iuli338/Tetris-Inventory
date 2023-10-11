@@ -62,7 +62,7 @@ class Item:
                     if Item.theHeldItem is None:
                         # Remove the element from its current position
                         Item.allItemsVector.remove(item)
-                        # Insert it at the beginning of the list
+                        # Insert it at the beginning of the list for it to be on top of all items
                         Item.allItemsVector.append(item)
                         Item.theHeldItem = item
                         return
@@ -78,35 +78,37 @@ class Item:
             return
         if Item.theHeldItem is None:
             return
-        print ("<< Incercare de plasare cu clickul>>")
-        print ("- Exista macar un container si exista un HeldItem")
+        print ("<< Incercare de plasare cu clickul >>")
+        print ("- Exista macar un container si exista un HeldItem")        
         for container in ItemContainer.ItemContainer.allContainersVector:
-            for tile in container.tilesVector:
-                if tile.collidepoint(Item.theHeldItem.rect.x+25,Item.theHeldItem.rect.y+25):
-                    print("- HeldItem s-a atins de un tile de al unui container")
-                    # If touches any item it can't be placed
-                    Item.theHeldItem.rect.x = tile.x
-                    Item.theHeldItem.rect.y = tile.y
-                    # It touches red tile it can't be placed
-                    for container in ItemContainer.ItemContainer.allContainersVector:
+            if container.zone.collidepoint(Item.theHeldItem.rect.x+25,Item.theHeldItem.rect.y+25):
+                for tile in container.tilesVector:
+                    if tile.collidepoint(Item.theHeldItem.rect.x+25,Item.theHeldItem.rect.y+25):
+                        print("- HeldItem s-a atins de un tile de al unui container")
+                        # If touches any item it can't be placed
+                        Item.theHeldItem.rect.x = tile.x
+                        Item.theHeldItem.rect.y = tile.y
+                        # It touches red tile it can't be placed
                         for redTile in container.redTilesVector:
                             if redTile.colliderect(Item.theHeldItem.rect):
                                 print("- HeldItem s-a atins de un red tile")
                                 Item.theHeldItem.rect.x = Item.theHeldItem.lastValidPositon[0]
                                 Item.theHeldItem.rect.y = Item.theHeldItem.lastValidPositon[1]
                                 return
-                    for item in Item.allItemsVector:
-                        if item.rect.colliderect(Item.theHeldItem.rect) and item is not Item.theHeldItem:
-                            print("- HeldItem s-a atins de un alt item deci nu poate fi plasat")
-                            Item.theHeldItem.rect.x = Item.theHeldItem.lastValidPositon[0]
-                            Item.theHeldItem.rect.y = Item.theHeldItem.lastValidPositon[1]
-                            return
-                    # If it doesn't touch any items it will be placed in the container
-                    Item.theHeldItem.rect.x = tile.x
-                    Item.theHeldItem.rect.y = tile.y
-                    Item.theHeldItem.lastValidPositon[0] = tile.x
-                    Item.theHeldItem.lastValidPositon[1] = tile.y
-                    return
+                        for item in Item.allItemsVector:
+                            if item.rect.colliderect(Item.theHeldItem.rect) and item is not Item.theHeldItem:
+                                print("- HeldItem s-a atins de un alt item deci nu poate fi plasat")
+                                Item.theHeldItem.rect.x = Item.theHeldItem.lastValidPositon[0]
+                                Item.theHeldItem.rect.y = Item.theHeldItem.lastValidPositon[1]
+                                return
+                        # If it doesn't touch any items it will be placed in the container
+                        print ("- Item plasat cu succes")
+                        Item.theHeldItem.rect.x = tile.x
+                        Item.theHeldItem.rect.y = tile.y
+                        Item.theHeldItem.lastValidPositon[0] = tile.x
+                        Item.theHeldItem.lastValidPositon[1] = tile.y
+                        return
+        print ("- Itemul nu poate fi plasat")
 
     def CheckHoverItemName(mouseX,mouseY):
         for item in Item.allItemsVector:

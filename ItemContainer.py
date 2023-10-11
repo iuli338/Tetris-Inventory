@@ -26,6 +26,9 @@ class ItemContainer:
         self.tilesVector = []
         self.redTilesVector:list = []
         self.name = name
+        zoneSizeX = (sizeX * ItemContainer.tileSize[0]) + (ItemContainer.gapBetweenTiles * sizeX-1)
+        zoneSizeY = (sizeY * ItemContainer.tileSize[1]) + (ItemContainer.gapBetweenTiles * sizeY-1)
+        self.zone = pygame.Rect(posX,posY,zoneSizeX,zoneSizeY)
         # Iterate and set each tile their correct position to form an 2D array
         for i in range(sizeY):
             for j in range(sizeX):
@@ -58,6 +61,8 @@ class ItemContainer:
             #   pygame.draw.rect(screen,ItemContainer.redColor,redTile)
             # Draw the text
             screen.blit(container.text, (container.posX, container.posY - 30))
+            # Draw the zone
+            #pygame.draw.rect(screen,ItemContainer.grayColor,container.zone)
 
     def SetPosition(self,newPosX:float,newPosY:float):
         self.posX = newPosX
@@ -78,6 +83,9 @@ class ItemContainer:
                     redTile.x = (self.posX - (ItemContainer.tileSize[0] + ItemContainer.gapBetweenTiles)) + (j * (ItemContainer.tileSize[0] + ItemContainer.gapBetweenTiles))
                     redTile.y = (self.posY - (ItemContainer.tileSize[1] + ItemContainer.gapBetweenTiles)) + (i * (ItemContainer.tileSize[1] + ItemContainer.gapBetweenTiles))
                     self.redTilesVector.append(redTile)
+        # Move the zone
+        self.zone.x = newPosX
+        self.zone.y = newPosY
 
     def GetPos(self):
         return list((int(self.posX),int(self.posY)))
