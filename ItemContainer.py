@@ -1,4 +1,3 @@
-from tokenize import String
 import pygame
 
 class ItemContainer:
@@ -80,3 +79,5 @@ class ItemContainer:
 
     def GetPos(self):
         return list((int(self.posX),int(self.posY)))
+
+    #def TryAddItemInInv (itemToAdd:Item)

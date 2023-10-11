@@ -8,7 +8,7 @@ class Item:
     theHeldItem = None
 
     # Colors
-    lightGrayColor = (120,120,120,50)
+    lightGrayColor = (120,120,120,128)
 
     def __init__(self,itemSizeX,itemSizeY,imagePath):
         self.itemSizeX = itemSizeX
@@ -16,6 +16,9 @@ class Item:
         self.sizeX = (itemSizeX * ItemContainer.ItemContainer.tileSize[0]) + (ItemContainer.ItemContainer.gapBetweenTiles * itemSizeX-1)
         self.sizeY = (itemSizeY * ItemContainer.ItemContainer.tileSize[1]) + (ItemContainer.ItemContainer.gapBetweenTiles * itemSizeY-1)
         self.rect:pygame.rect.Rect = pygame.Rect(0, 0, self.sizeX, self.sizeY)
+        self.transparentImage:pygame.surface.Surface = pygame.Surface((self.sizeX,self.sizeY))
+        self.transparentImage.set_alpha(128)
+        self.transparentImage.fill(Item.lightGrayColor)
         self.lastValidPositon = [0,0]
         # Load the item image
         try:
@@ -31,7 +34,8 @@ class Item:
         if len(Item.allItemsVector) == 0:
             return
         for item in Item.allItemsVector:
-            pygame.draw.rect(screen,Item.lightGrayColor,item.rect)
+            #pygame.draw.rect(screen,Item.lightGrayColor,item.rect)
+            screen.blit(item.transparentImage,(item.rect.x,item.rect.y))
             if item.image is not None:
                 screen.blit(item.image,(item.rect.x,item.rect.y))
 
