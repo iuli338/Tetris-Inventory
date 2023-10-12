@@ -3,6 +3,7 @@ import sys
 # My modules
 import ItemContainer as ITC
 import Item as IT
+import RightClickMenu as RCM
 
 # Initialize Pygame
 pygame.init()
@@ -22,12 +23,18 @@ item2 = IT.Item(2,2,"armor.png","Armor")
 item3 = IT.Item(3,1,"shotgun.png","Shotgun")
 item4 = IT.Item(1,1,"pistol.png","Pistol 9mm")
 item5 = IT.Item(1,1,"pistol.png","Pistol 9mm")
+item6 = IT.Item(2,2,"medkit.png","Medkit")
 # Add the items in the container
 container1.TryAddItemInCont(item1)
 container1.TryAddItemInCont(item4)
 container1.TryAddItemInCont(item5)
 container2.TryAddItemInCont(item2)
 container2.TryAddItemInCont(item3)
+container1.TryAddItemInCont(item6)
+
+# Test
+#button1 = RCM.RightClickMenu.Button(0,0,"Click me")
+RCM.RightClickMenu.Init()
 
 # Main game loop
 running = True
@@ -42,6 +49,8 @@ while running:
                 # Get the mouse position
                 mouseX, mouseY = pygame.mouse.get_pos()
                 IT.Item.CheckMouseClick(mouseX,mouseY)
+            if pygame.mouse.get_pressed()[2]:
+                RCM.RightClickMenu.CheckRightClick(mouseX,mouseY)
         if event.type == pygame.KEYDOWN:
             IT.Item.CheckAllKeyPress(event.key)
 
@@ -54,6 +63,8 @@ while running:
     IT.Item.CheckGlowOnHold(mouseX,mouseY)
     # Check hover item white image
     IT.Item.CheckHeldItemWhiteImagePos()
+    # Check button hober glow
+    RCM.RightClickMenu.Button.CheckGlowOnHold(mouseX,mouseY)
 
     # Clear the screen
     screen.fill((0, 0, 0))
@@ -61,6 +72,7 @@ while running:
     # Draw the container
     ITC.ItemContainer.Draw(screen)
     IT.Item.Draw(screen)
+    RCM.RightClickMenu.Button.Draw(screen)
 
     # Update the display
     pygame.display.flip()

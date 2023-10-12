@@ -23,6 +23,7 @@
   <ItemGroup>
     <Compile Include="ItemContainer.py" />
     <Compile Include="Item.py" />
+    <Compile Include="RightClickMenu.py" />
     <Compile Include="Tetris_Inventory.py" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />

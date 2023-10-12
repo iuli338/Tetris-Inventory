@@ -1,5 +1,6 @@
 import pygame
 import ItemContainer
+import RightClickMenu
 
 class Item:
 
@@ -86,6 +87,9 @@ class Item:
         Item.heldItemWhiteImage.fill(Item.limePastelColor)
 
     def CheckMouseClick(mouseX,mouseY):
+        for button in RightClickMenu.RightClickMenu.MenuButtonsVector:
+            if button.rect.collidepoint(mouseX, mouseY) and Item.theHeldItem is None:
+                return
         for item in Item.allItemsVector:
             if item.rect.collidepoint(mouseX, mouseY):
                 if Item.theHeldItem is item:
@@ -108,6 +112,7 @@ class Item:
                         Item.heldItemWhiteImage = pygame.Surface((Item.theHeldItem.sizeX,Item.theHeldItem.sizeY))
                         Item.heldItemWhiteImage.set_alpha(60)
                         Item.heldItemWhiteImage.fill(Item.limePastelColor)
+                        RightClickMenu.RightClickMenu.CloseMenu()
                         return
 
     def CheckHeldItemWhiteImagePos():
@@ -199,7 +204,12 @@ class Item:
             return
         for item in Item.allItemsVector:
             if item.rect.collidepoint(mouseX,mouseY):
-                item.transparentImage.fill(Item.whiteColor)
+                for button in RightClickMenu.RightClickMenu.MenuButtonsVector:
+                    if button.rect.collidepoint(mouseX, mouseY) and Item.theHeldItem is None:
+                        item.transparentImage.fill(Item.lightGrayColor)
+                        return
+                    else:
+                        item.transparentImage.fill(Item.whiteColor)
             else:
                 item.transparentImage.fill(Item.lightGrayColor)
 
