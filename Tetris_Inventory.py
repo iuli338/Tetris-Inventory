@@ -52,6 +52,8 @@ while running:
     IT.Item.CheckHoverItemName(mouseX,mouseY)
     # Check item hover glow
     IT.Item.CheckGlowOnHold(mouseX,mouseY)
+    # Check hover item white image
+    IT.Item.CheckHeldItemWhiteImagePos()
 
     # Clear the screen
     screen.fill((0, 0, 0))

@@ -6,7 +6,10 @@ class Item:
     # Static members
     allItemsVector:list = []
     theHeldItem = None
-    rotatedStareWhenPiked = None
+    rotatedStateWhenPiked = None
+    heldItemWhiteImage = None
+    heldItemWhiteImagePos = [0,0]
+    heldItemWhiteImageVisible = False
 
     # Hover item name
     pygame.font.init()
@@ -17,6 +20,7 @@ class Item:
     # Colors
     lightGrayColor = (120,120,120,128)
     hoverColor = (200,200,200,128)
+    limePastelColor = (209, 254, 184)
 
     def __init__(self,itemSizeX,itemSizeY,imagePath,itemName):
         self.itemSizeX = itemSizeX
@@ -43,6 +47,10 @@ class Item:
     def Draw(screen:pygame.surface.Surface):
         if len(Item.allItemsVector) == 0:
             return
+        # Draw the hover item white image
+        if (Item.theHeldItem is not None) and (Item.heldItemWhiteImageVisible == True):
+            screen.blit(Item.heldItemWhiteImage,(Item.heldItemWhiteImagePos[0],Item.heldItemWhiteImagePos[1]))
+        # Draw all the items
         for item in Item.allItemsVector:
             #pygame.draw.rect(screen,Item.lightGrayColor,item.rect)
             screen.blit(item.transparentImage,(item.rect.x,item.rect.y))
@@ -72,13 +80,17 @@ class Item:
         Item.theHeldItem.transparentImage.set_alpha(128)
         Item.theHeldItem.transparentImage.fill(Item.lightGrayColor)
         Item.theHeldItem.rotated = ~Item.theHeldItem.rotated
+        # Update the white image
+        Item.heldItemWhiteImage = pygame.Surface((Item.theHeldItem.sizeX,Item.theHeldItem.sizeY))
+        Item.heldItemWhiteImage.set_alpha(60)
+        Item.heldItemWhiteImage.fill(Item.limePastelColor)
 
     def CheckMouseClick(mouseX,mouseY):
         for item in Item.allItemsVector:
             if item.rect.collidepoint(mouseX, mouseY):
                 if Item.theHeldItem is item:
                     # Check if the items was rotated but not placed
-                    if Item.theHeldItem.rotated != Item.rotatedStareWhenPiked:
+                    if Item.theHeldItem.rotated != Item.rotatedStateWhenPiked:
                         Item.RotateHeldItem()
                     Item.theHeldItem.rect.x = Item.theHeldItem.lastValidPositon[0]
                     Item.theHeldItem.rect.y = Item.theHeldItem.lastValidPositon[1]
@@ -91,8 +103,40 @@ class Item:
                         # Insert it at the beginning of the list for it to be on top of all items
                         Item.allItemsVector.append(item)
                         Item.theHeldItem = item
-                        Item.rotatedStareWhenPiked = item.rotated
+                        Item.rotatedStateWhenPiked = item.rotated
+                        # Set the hover item white image
+                        Item.heldItemWhiteImage = pygame.Surface((Item.theHeldItem.sizeX,Item.theHeldItem.sizeY))
+                        Item.heldItemWhiteImage.set_alpha(60)
+                        Item.heldItemWhiteImage.fill(Item.limePastelColor)
                         return
+
+    def CheckHeldItemWhiteImagePos():
+        if Item.theHeldItem is None:
+            return
+        for container in ItemContainer.ItemContainer.allContainersVector:
+            if container.zone.collidepoint(Item.theHeldItem.rect.x+25,Item.theHeldItem.rect.y+25):
+                for tile in container.tilesVector:
+                    if tile.collidepoint(Item.theHeldItem.rect.x+25,Item.theHeldItem.rect.y+25):
+                        # The held item white image will go to the tiles position
+                        Item.heldItemWhiteImagePos[0] = tile.x
+                        Item.heldItemWhiteImagePos[1] = tile.y
+                        heldItemWhiteImageRect = Item.heldItemWhiteImage.get_rect()
+                        heldItemWhiteImageRect.x = tile.x
+                        heldItemWhiteImageRect.y = tile.y
+                        # It will check if it doesn't touch any red tiles
+                        for redTile in container.redTilesVector:
+                            if redTile.colliderect(heldItemWhiteImageRect):
+                                Item.heldItemWhiteImageVisible = False
+                                return
+                        # Then will check if it doesn't touch any items
+                        for item in Item.allItemsVector:
+                            if (item.rect.colliderect(heldItemWhiteImageRect)) and (item is not Item.theHeldItem):
+                                Item.heldItemWhiteImageVisible = False
+                                return
+                        # If everything goes right the visibility is set to True
+                        Item.heldItemWhiteImageVisible = True
+                        return
+            Item.heldItemWhiteImageVisible = False
 
     def ItemFollowMouse(mouseX,mouseY):
         if Item.theHeldItem is None:
@@ -130,7 +174,7 @@ class Item:
                                 return
                         # If it doesn't touch any items it will be placed in the container
                         print ("- Item plasat cu succes")
-                        Item.rotatedStareWhenPiked = Item.theHeldItem.rotated
+                        Item.rotatedStateWhenPiked = Item.theHeldItem.rotated
                         Item.theHeldItem.rect.x = tile.x
                         Item.theHeldItem.rect.y = tile.y
                         Item.theHeldItem.lastValidPositon[0] = tile.x
@@ -166,7 +210,7 @@ class Item:
     def CheckESCPress():
         if Item.theHeldItem is not None:
             # Check if the items was rotated but not placed
-            if Item.theHeldItem.rotated != Item.rotatedStareWhenPiked:
+            if Item.theHeldItem.rotated != Item.rotatedStateWhenPiked:
                 Item.RotateHeldItem()
             Item.theHeldItem.rect.x = Item.theHeldItem.lastValidPositon[0]
             Item.theHeldItem.rect.y = Item.theHeldItem.lastValidPositon[1]
