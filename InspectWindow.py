@@ -16,8 +16,8 @@ class InspectWindow:
     @staticmethod
     def OpenInspect(item):
         InspectWindow.inspectedItemImage = item.image
-        InspectWindow.sizeX = int(item.sizeX * 2)
-        InspectWindow.sizeY = int(item.sizeY * 2)
+        InspectWindow.sizeX = int(item.image.get_rect().width * 2)
+        InspectWindow.sizeY = int(item.image.get_rect().height * 2)
         windowSizeX, windowSizeY = pygame.display.get_surface().get_size()
         InspectWindow.posX = (windowSizeX//2) - (InspectWindow.sizeX//2)
         InspectWindow.posY = (windowSizeY//2) - (InspectWindow.sizeY//2)
