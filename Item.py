@@ -1,6 +1,7 @@
 import pygame
 import ItemContainer
 import RightClickMenu
+from Interface2 import GetInspectedItemImage
 
 class Item:
 
@@ -87,6 +88,8 @@ class Item:
         Item.heldItemWhiteImage.fill(Item.limePastelColor)
 
     def CheckMouseClick(mouseX,mouseY):
+        if GetInspectedItemImage() is not None:
+            return
         for button in RightClickMenu.RightClickMenu.MenuButtonsVector:
             if button.rect.collidepoint(mouseX, mouseY) and Item.theHeldItem is None:
                 return

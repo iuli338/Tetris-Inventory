@@ -4,6 +4,8 @@ import sys
 import ItemContainer as ITC
 import Item as IT
 import RightClickMenu as RCM
+import InspectWindow as IW
+import Button as BT
 
 # Initialize Pygame
 pygame.init()
@@ -49,10 +51,14 @@ while running:
                 # Get the mouse position
                 mouseX, mouseY = pygame.mouse.get_pos()
                 IT.Item.CheckMouseClick(mouseX,mouseY)
+                RCM.RightClickMenu.CheckLeftClick(mouseX,mouseY)
+                IW.InspectWindow.CheckCloseButton(mouseX,mouseY)
             if pygame.mouse.get_pressed()[2]:
                 RCM.RightClickMenu.CheckRightClick(mouseX,mouseY)
+
         if event.type == pygame.KEYDOWN:
             IT.Item.CheckAllKeyPress(event.key)
+            RCM.RightClickMenu.CheckAllKeyPress(event.key)
 
     # Check item follow mouse
     mouseX, mouseY = pygame.mouse.get_pos()
@@ -64,7 +70,7 @@ while running:
     # Check hover item white image
     IT.Item.CheckHeldItemWhiteImagePos()
     # Check button hober glow
-    RCM.RightClickMenu.Button.CheckGlowOnHold(mouseX,mouseY)
+    BT.Button.CheckGlowOnHold(mouseX,mouseY)
 
     # Clear the screen
     screen.fill((0, 0, 0))
@@ -72,7 +78,8 @@ while running:
     # Draw the container
     ITC.ItemContainer.Draw(screen)
     IT.Item.Draw(screen)
-    RCM.RightClickMenu.Button.Draw(screen)
+    RCM.RightClickMenu.Draw(screen)
+    IW.InspectWindow.Draw(screen)
 
     # Update the display
     pygame.display.flip()
