@@ -36,6 +36,7 @@ class Item:
         self.transparentImage.fill(Item.lightGrayColor)
         self.lastValidPositon = [0,0]
         self.itemName = itemName
+        self.inWichContainer:ItemContainer.ItemContainer = None
         # Load the item image
         try:
             # Load the image
@@ -66,6 +67,14 @@ class Item:
         if Item.hoverItemText is not None and Item.theHeldItem is None:
             x, y = pygame.mouse.get_pos()
             screen.blit(Item.hoverItemText,(x+10,y+20))
+
+    def DropItem (self):
+        self.lastValidPositon = [0,0]
+        self.posX = 0
+        self.posY = 0
+        self.rect.x = 0
+        self.rect.y = 0
+        self.inWichContainer = None
 
     def RotateHeldItem():
         # Swap the X and Y
@@ -116,7 +125,12 @@ class Item:
                         Item.heldItemWhiteImage.set_alpha(60)
                         Item.heldItemWhiteImage.fill(Item.limePastelColor)
                         RightClickMenu.RightClickMenu.CloseMenu()
+                        # Set the rest items transparent image color to light gray
+                        for item in Item.allItemsVector:
+                            if item is not Item.theHeldItem:
+                                item.transparentImage.fill(Item.lightGrayColor)
                         return
+                        
 
     def CheckHeldItemWhiteImagePos():
         if Item.theHeldItem is None:
@@ -182,6 +196,7 @@ class Item:
                                 return
                         # If it doesn't touch any items it will be placed in the container
                         print ("- Item plasat cu succes")
+                        Item.theHeldItem.inWichContainer = container
                         Item.rotatedStateWhenPiked = Item.theHeldItem.rotated
                         Item.theHeldItem.rect.x = tile.x
                         Item.theHeldItem.rect.y = tile.y
@@ -200,10 +215,7 @@ class Item:
 
     def CheckGlowOnHold(mouseX,mouseY):
         if Item.theHeldItem is not None:
-            if Item.theHeldItem.rect.collidepoint(mouseX,mouseY):
-                Item.theHeldItem.transparentImage.fill(Item.whiteColor)
-            else:
-                Item.theHeldItem.transparentImage.fill(Item.lightGrayColor)
+            Item.theHeldItem.transparentImage.fill(Item.whiteColor)
             return
         for item in Item.allItemsVector:
             if item.rect.collidepoint(mouseX,mouseY):

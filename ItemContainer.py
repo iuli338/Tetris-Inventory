@@ -1,5 +1,7 @@
 import pygame
 import Item
+from Button import Button
+from Interface3 import GetIfRightClickMenuVisible
 
 class ItemContainer:
 
@@ -48,6 +50,8 @@ class ItemContainer:
         self.text = ItemContainer.font.render(name, True, ItemContainer.whiteColor)
         #
         ItemContainer.allContainersVector.append(self)
+        # Drop All button
+        self.dropAllButton:Button = Button(self.posX,self.posY + zoneSizeY + 10,"[Drop all]")
 
     def Draw(screen:pygame.surface.Surface):
         if len(ItemContainer.allContainersVector) == 0:
@@ -63,6 +67,8 @@ class ItemContainer:
             screen.blit(container.text, (container.posX, container.posY - 30))
             # Draw the zone
             #pygame.draw.rect(screen,ItemContainer.grayColor,container.zone)
+            # Draw drop all button
+            Button.DrawButton(screen,container.dropAllButton)
 
     def SetPosition(self,newPosX:float,newPosY:float):
         self.posX = newPosX
@@ -86,6 +92,9 @@ class ItemContainer:
         # Move the zone
         self.zone.x = newPosX
         self.zone.y = newPosY
+        # Move the drop all button
+        zoneSizeY = (self.sizeY * ItemContainer.tileSize[1]) + (ItemContainer.gapBetweenTiles * self.sizeY-1)
+        self.dropAllButton.SetPosition(self.posX,self.posY + zoneSizeY + 10)
 
     def GetPos(self):
         return list((int(self.posX),int(self.posY)))
@@ -121,6 +130,26 @@ class ItemContainer:
                 itemToAdd.rect.y = tile.y
                 itemToAdd.lastValidPositon[0] = tile.x
                 itemToAdd.lastValidPositon[1] = tile.y
+                itemToAdd.inWichContainer = self
                 print ("Itemul [" + itemToAdd.itemName + "] a fost adaugat in containerul [" + self.name + "].")
                 return
         print ("Itemul nu a putut fi introdus in container.")
+
+    def CheckDropAllButton(mouseX,mouseY):
+        if len(Item.Item.allItemsVector) == 0:
+            return
+        if GetIfRightClickMenuVisible() == True:
+            return
+        containerToCheck:ItemContainer = None
+        for container in ItemContainer.allContainersVector:
+            if container.dropAllButton.rect.collidepoint(mouseX,mouseY):
+                containerToCheck = container
+                break;
+        if containerToCheck is None:
+            return
+        print("<< Incercare de sterge a tuturor itemelor dintr-un container >>")
+        for item in Item.Item.allItemsVector:
+            if item.inWichContainer is containerToCheck:
+                item.DropItem()
+        print (f"[Au fost sterse toate itemele din containerul {containerToCheck.name}]")
+

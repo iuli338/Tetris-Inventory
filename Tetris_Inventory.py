@@ -26,6 +26,7 @@ item3 = IT.Item(3,1,"shotgun.png","Shotgun")
 item4 = IT.Item(1,1,"pistol.png","Pistol 9mm")
 item5 = IT.Item(1,1,"pistol.png","Pistol 9mm")
 item6 = IT.Item(2,2,"medkit.png","Medkit")
+item7 = IT.Item(1,1,"pistolMag.png","Pistol Ammo")
 # Add the items in the container
 container1.TryAddItemInCont(item1)
 container1.TryAddItemInCont(item4)
@@ -33,6 +34,7 @@ container1.TryAddItemInCont(item5)
 container2.TryAddItemInCont(item2)
 container2.TryAddItemInCont(item3)
 container1.TryAddItemInCont(item6)
+container2.TryAddItemInCont(item7)
 
 # Test
 #button1 = RCM.RightClickMenu.Button(0,0,"Click me")
@@ -53,6 +55,7 @@ while running:
                 IT.Item.CheckMouseClick(mouseX,mouseY)
                 RCM.RightClickMenu.CheckLeftClick(mouseX,mouseY)
                 IW.InspectWindow.CheckCloseButton(mouseX,mouseY)
+                ITC.ItemContainer.CheckDropAllButton(mouseX,mouseY)
             if pygame.mouse.get_pressed()[2]:
                 RCM.RightClickMenu.CheckRightClick(mouseX,mouseY)
 

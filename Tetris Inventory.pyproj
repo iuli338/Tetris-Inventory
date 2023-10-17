@@ -26,6 +26,7 @@
     <Compile Include="InspectWindow.py" />
     <Compile Include="Interface2.py" />
     <Compile Include="Button.py" />
+    <Compile Include="Interface3.py" />
     <Compile Include="RightClickMenu.py" />
     <Compile Include="Tetris_Inventory.py" />
   </ItemGroup>

@@ -7,8 +7,8 @@ import Button
 class RightClickMenu:
     # Static members
     MenuButtonsVector = []
-    InspectButton = None
-    DropButton = None
+    InspectButton:Button.Button = None
+    DropButton:Button.Button = None
     #
     isMenuVisible = False
     #
@@ -28,7 +28,7 @@ class RightClickMenu:
         Button.Button.DrawButton(screen,RightClickMenu.DropButton)
 
     def SetPosition(newPosX,newPosY):
-        Yincrement = 0
+        Yincrement = 28
         for button in RightClickMenu.MenuButtonsVector:
             button.rect.x = newPosX
             button.rect.y = newPosY + Yincrement
@@ -71,3 +71,8 @@ class RightClickMenu:
         if RightClickMenu.InspectButton.rect.collidepoint(mouseX, mouseY):
             OpenInspect(RightClickMenu.clickedItem)
             RightClickMenu.CloseMenu()
+        # Drop button
+        if RightClickMenu.DropButton.rect.collidepoint(mouseX,mouseY):
+            RightClickMenu.clickedItem.DropItem()
+            RightClickMenu.CloseMenu()
+
